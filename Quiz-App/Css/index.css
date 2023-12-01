@@ -1,0 +1,29 @@
+h1 {
+  color: #113f67;
+  margin-bottom: 50px;
+  font-size: 2.5rem;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  padding: 20px;
+}
+
+a {
+  background-color: #fff;
+  margin-bottom: 20px;
+  padding: 10px;
+  font-size: larger;
+  text-decoration: none;
+  color: #113f67;
+  cursor: pointer;
+  border-radius: 10px;
+  text-align: center;
+  transition: all 0.2s ease-in;
+}
+a:hover {
+  background-color: #113f67;
+  color: #e7eaf6;
+}
