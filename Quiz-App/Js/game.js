@@ -1,20 +1,33 @@
 import formatData from "./helper.js";
 
+const level = localStorage.getItem("level") || "medium";
 const loader = document.getElementById('loader');
 const container = document.getElementById('container');
 const questionText = document.getElementById('question-text');
-const answerList = document.querySelectorAll('.answers-list');
-
-const URL = 'https://opentdb.com/api.php?amount=10';
+const answerList = document.querySelectorAll(".answer-text");
+const scoreText = document.getElementById('score');
+const nextButton = document.getElementById("next-button")
+const finishButton = document.getElementById("finish-button")
+const questionNumber = document.getElementById("question-number")
+const error = document.getElementById("error")
+const CORRECT_BONUS = 10;
+const URL = `https://opentdb.com/api.php?amount=10&difficulty=${level}&type=multiple`;
 let formattedData = null;
 let questionIndex = 0;
 let correctAnswer = null;
+let score = 0;
+let isAccepted = true;
 
 const fetchData = async () => {
-    const res = await fetch(URL);
-    const json = await res.json();
-    formattedData = formatData(json.results)
-    start()
+    try {
+        const res = await fetch(URL);
+        const json = await res.json();
+        formattedData = formatData(json.results);
+        start();
+    } catch (err) {
+        loader.style.display = "none";
+        error.style.display = "block"
+    }
 };
 
 const start = () => {
@@ -22,14 +35,54 @@ const start = () => {
     loader.style.display = "none";
     container.style.display = "block";
 };
+
 const showQuestion = () => {
+    questionNumber.innerText = questionIndex + 1;
     const { question, answers, correctAnswerIndex } =
         formattedData[questionIndex];
-    correctAnswer = correctAnswerIndex
-    questionText.innerText = question
+    correctAnswer = correctAnswerIndex;
+    questionText.innerText = question;
     answerList.forEach((button, index) => {
         button.innerText = answers[index];
+    })
+};
 
-    });
+const checkAnswer = (event, index) => {
+    if (!isAccepted) return;
+    isAccepted = false;
+    const isCorrect = index === correctAnswer ? true : false;
+    if (isCorrect) {
+        event.target.classList.add("correct");
+        score += CORRECT_BONUS;
+        scoreText.innerText = score;
+    } else {
+        event.target.classList.add("incorrect");
+        answerList[correctAnswer].classList.add("correct");
+    };
+};
+const nextQuestion = () => {
+    questionIndex++;
+    if (questionIndex < formattedData.length) {
+        isAccepted = true;
+        removeClasses()
+        showQuestion()
+    } else {
+        finish()
+    }
+
 }
+
+const removeClasses = () => {
+    answerList.forEach(button => button.className = 'answer-text')
+}
+const finish = () => {
+    localStorage.setItem("score", JSON.stringify(score))
+    window.location.assign("end.html");
+}
+
 window.addEventListener("load", fetchData);
+answerList.forEach((button, index) => {
+    button.addEventListener("click", () => checkAnswer(event, index));
+});
+nextButton.addEventListener("click", nextQuestion)
+finishButton.addEventListener("click", finish)

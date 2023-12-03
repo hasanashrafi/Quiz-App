@@ -72,7 +72,7 @@ h3 {
   text-align: left;
   cursor: pointer;
   border: 2px solid #fff;
-  transition: all 0.2 ease-in;
+  transition: all 0.2s ease-in;
 }
 .answer-text:hover {
   background-color: #eeedfb;
@@ -96,4 +96,20 @@ h3 {
 #finish-button:hover {
   background-color: #6757d9;
   color: #fff;
+}
+.correct {
+  background-color: #5bd7bc;
+}
+
+.incorrect {
+  background-color: #fe6681;
+}
+.correct:hover {
+  background-color: #5bd7bc;
+}
+.incorrect:hover {
+  background-color: #5bd7bc;
+}
+#error {
+  display: none;
 }
